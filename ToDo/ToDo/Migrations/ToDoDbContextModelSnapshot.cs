@@ -24,12 +24,16 @@ namespace ToDo.Migrations
 
             modelBuilder.Entity("ToDo.Model.Category", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("ID");
 
@@ -38,100 +42,122 @@ namespace ToDo.Migrations
                     b.HasData(
                         new
                         {
-                            ID = "1",
+                            ID = 1,
                             Name = "Work"
                         },
                         new
                         {
-                            ID = "2",
+                            ID = 2,
                             Name = "Family"
                         },
                         new
                         {
-                            ID = "3",
+                            ID = 3,
                             Name = "Birth"
                         },
                         new
                         {
-                            ID = "4",
+                            ID = 4,
                             Name = "Fun"
                         },
                         new
                         {
-                            ID = "5",
+                            ID = 5,
                             Name = "Sport"
                         },
                         new
                         {
-                            ID = "6",
+                            ID = 6,
                             Name = "Study"
                         });
                 });
 
             modelBuilder.Entity("ToDo.Model.ToDo", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tasks");
+                    b.HasIndex("CategoryId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            CategoryId = "1",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Hello,I would like to take out something",
-                            Status = 0,
-                            Title = "Special"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            CategoryId = "2",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Qingming Festival holiday home",
-                            Status = 0,
-                            Title = "Go Home"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            CategoryId = "3",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Remember to buy gift home",
-                            Status = 0,
-                            Title = "Girlfriend's Birthday"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            CategoryId = "2",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Remember to pack your luggage",
-                            Status = 0,
-                            Title = "Japan Tourism"
-                        });
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("ToDo.Model.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ToDo.Model.ToDo", b =>
+                {
+                    b.HasOne("ToDo.Model.Category", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ToDo.Model.User", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ToDo.Model.Category", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("ToDo.Model.User", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

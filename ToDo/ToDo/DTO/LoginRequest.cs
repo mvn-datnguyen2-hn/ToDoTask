@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ToDo.Model.Request
+namespace ToDo.DTO
 {
     public class LoginRequest
     {

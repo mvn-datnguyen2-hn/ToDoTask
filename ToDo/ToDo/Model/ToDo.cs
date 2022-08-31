@@ -5,11 +5,16 @@ namespace ToDo.Model
 {
     public class ToDo
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         [ForeignKey("Category")]
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
+        [ForeignKey("User")]
+        public Guid UserId { get; set; }
+        [MaxLength(50)]
         public string Title { get; set; }
+        [MaxLength(250)]
         public string Details { get; set; }
         public DateTime Date { get; set; }
         public int Status { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ToDo.Model.Request
+namespace ToDo.DTO
 {
     public class RegisterRequest
     {
@@ -11,8 +11,7 @@ namespace ToDo.Model.Request
         public string  Username { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public string ConfirmPassword { get; set; }
+        
 
     }
 }

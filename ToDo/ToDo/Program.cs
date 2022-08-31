@@ -11,15 +11,17 @@ using ToDo.Services.User;
 using ToDoDbContext = ToDo.Model.ToDoDbContext;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ToDoDbContext>(v =>
-    v.UseSqlServer("Data Source=LAPTOP-LUVA24DL\\SQLEXPRESS;Initial Catalog=ToDo;Integrated Security=True"));// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    v.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IToDoRespository, ToDoRespository>();
-builder.Services.AddSingleton<IPasswordHasher,BcryptPasswordHasher>();
-builder.Services.AddSingleton<IUserRespository,UserRespository>();
+builder.Services.AddScoped<IToDoService, ToDoService>();
+builder.Services.AddSingleton<BcryptPasswordHasher>();
+builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddSingleton<AccessTokenGenerator>();
 builder.Services.Configure<AuthenticationConfiguration>(builder.Configuration.GetSection("Authentication"));
 

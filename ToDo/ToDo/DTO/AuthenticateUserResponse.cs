@@ -1,4 +1,4 @@
-﻿namespace ToDo.Model.Response
+﻿namespace ToDo.DTO
 {
     public class AuthenticateUserResponse
     {

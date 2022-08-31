@@ -4,8 +4,11 @@ namespace ToDo.Model
 {
     public class Category
     {
+        
         [Key]
-        public string ID { get; set; }
+        public int ID { get; set; }
+        [MaxLength(20)]
         public string Name { get; set; }
+        public ICollection<ToDo> Tasks { get; set; }
     }
 }

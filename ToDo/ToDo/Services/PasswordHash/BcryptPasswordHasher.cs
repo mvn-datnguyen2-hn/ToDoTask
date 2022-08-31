@@ -1,6 +1,6 @@
 ﻿namespace ToDo.Services.PasswordHash
 {
-    public class BcryptPasswordHasher : IPasswordHasher
+    public class BcryptPasswordHasher
     {
         public string HashPassword(string password)
         {
