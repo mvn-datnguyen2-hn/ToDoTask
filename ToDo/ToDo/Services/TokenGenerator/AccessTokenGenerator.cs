@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ToDo.DTOs;
 using ToDo.Model;
 
 namespace ToDo.Services.TokenGenerator
@@ -15,13 +16,14 @@ namespace ToDo.Services.TokenGenerator
         {
             _configuration = configuration.Value;
         }
-        public string GenerateToken(Model.User user)
+        public string GenerateToken(UserResponse user)
         {
+            
             SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.AccessTokenSecret));
             SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("id", user.Id.ToString()),
+                new Claim("sub", user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Username),
 

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.DTO;
+using ToDo.DTOs;
 using ToDo.Services.ToDo;
 
 namespace ToDo.Controllers
@@ -18,35 +20,38 @@ namespace ToDo.Controllers
             _toDoService = toDoService;
         }
         [HttpGet("tasks")]
-        public async Task<IActionResult> GetTasks(Guid userId,[FromQuery] int status, [FromQuery] int day)
+        public async Task<IActionResult> GetTasks([FromQuery] FilterRequest filter)
         {
-            return Ok(await _toDoService.GetTask(userId, status, day));
+            var userId =Guid.Parse(HttpContext.User.FindFirstValue("sub"));
+            return Ok(await _toDoService.GetTask(userId, filter));
         }
         [HttpGet("tasks/{taskId}")]
         public async Task<IActionResult> GetTasksById(Guid taskId)
         {
-            var item = await _toDoService.GetTaskById(taskId);
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue("sub"));
+            var item = await _toDoService.GetTaskById(taskId,userId);
             return Ok(item);
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ToDoRequest toDo)
         {
-            await _toDoService.CreateTask(toDo);
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue("sub"));
+            await _toDoService.CreateTask(userId,toDo);
             return Ok(toDo);
         }
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ToDoRequest toDo, Guid taskId)
+        public async Task<IActionResult> Update([FromBody] ToDoRequest toDo)
         {
-            await _toDoService.UpdateTask(toDo,taskId);
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue("sub"));
+            await _toDoService.UpdateTask(userId,toDo);
             return Ok(toDo);
         }
-        [HttpPut("tasks-done")]
-        public async Task<IActionResult> CompleteTask([FromBody] List<Guid> taskID)
+        [HttpPatch("tasks/complete")]
+        public async Task<IActionResult> CompleteTask([FromBody] List<Guid> taskIDs)
         {
-            await _toDoService.TaskDone(taskID);
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue("sub"));
+            await _toDoService.TaskDone(userId,taskIDs);
             return Ok();
         }
-
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ToDo.DTO;
+using ToDo.DTOs;
 using ToDo.Model;
 using ToDo.Services.PasswordHash;
 
@@ -7,28 +8,37 @@ namespace ToDo.Services.User
     public class UserService : IUserService
     {
         private readonly ToDoDbContext _context;
-        private List<Model.User> _users;
+        private readonly List<UserResponse> _users;
         public UserService(ToDoDbContext context)
         {
             _context = context;
-            _users = GetUser();
+            _users = new List<UserResponse>();
+            GetUser();
         }
-       
-        public  List<Model.User> GetUser()
+        public  List<UserResponse> GetUser()
         {
-            _users = _context.Users.ToList();
+            var user = _context.Users.ToList();
+            foreach (var x in user)
+            {
+                UserResponse userResponse = new UserResponse
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Username = x.Username,
+                    PasswordHash = x.PasswordHash
+                };
+                _users.Add(userResponse);
+            }
             return _users;
         }
-
-        public Task<Model.User> GetByEmail(string email)
+        public Task<UserResponse> GetByEmail(string email)
         {
             return Task.FromResult(_users.FirstOrDefault(c => c.Email == email));
         }
-        public Task<Model.User> GetByUserName(string username)
+        public Task<UserResponse> GetByUserName(string username)
         {
             return Task.FromResult(_users.FirstOrDefault(c => c.Username == username));
         }
-
         public Task SignUp(RegisterRequest registerRequest)
         {
             BcryptPasswordHasher passwordHasher = new BcryptPasswordHasher();
@@ -43,7 +53,5 @@ namespace ToDo.Services.User
             _context.SaveChanges();
             return Task.FromResult(registrationUser);
         }
-
-
     }
 }

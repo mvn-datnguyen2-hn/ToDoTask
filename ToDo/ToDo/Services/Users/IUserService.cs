@@ -1,13 +1,14 @@
 ﻿using ToDo.DTO;
+using ToDo.DTOs;
 using ToDo.Model;
 
 namespace ToDo.Services.User
 {
     public interface IUserService
     {
-        List<Model.User> GetUser();
-        Task<Model.User> GetByEmail(string email);
-        Task<Model.User> GetByUserName(string username);
+        List<UserResponse> GetUser();
+        Task<UserResponse> GetByEmail(string email);
+        Task<UserResponse> GetByUserName(string username);
         Task SignUp(RegisterRequest registerRequest);
     }
 }

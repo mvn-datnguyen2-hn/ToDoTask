@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.DTO;
+using ToDo.DTOs;
 using ToDo.Model;
 using ToDo.Services.PasswordHash;
 using ToDo.Services.TokenGenerator;
@@ -16,24 +17,24 @@ namespace ToDo.Controllers
         private readonly BcryptPasswordHasher _passwordHasher;
         private readonly AccessTokenGenerator _accessTokenGenerator;
 
-        public UsersController(IUserService respository, BcryptPasswordHasher passwordHasher,AccessTokenGenerator accessTokenGenerator)
+        public UsersController(IUserService userService, BcryptPasswordHasher passwordHasher,AccessTokenGenerator accessTokenGenerator)
         {
-            _userService = respository;
+            _userService = userService;
             _passwordHasher = passwordHasher;
             _accessTokenGenerator = accessTokenGenerator;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            User existUserByEmail = await _userService.GetByEmail(registerRequest.Email);
+            UserResponse existUserByEmail = await _userService.GetByEmail(registerRequest.Email);
             if (existUserByEmail != null)
             {
-                return Conflict(new ErrorResponse("Email already exist"));
+                return BadRequest(new ErrorResponse("Email already exist"));
             }
-            User existUserByUsername = await _userService.GetByUserName(registerRequest.Username);
+            UserResponse existUserByUsername = await _userService.GetByUserName(registerRequest.Username);
             if (existUserByUsername != null)
             {
-                return Conflict(new ErrorResponse("Username already exist"));
+                return BadRequest(new ErrorResponse("Username already exist"));
             }
             await _userService.SignUp(registerRequest);
             
@@ -44,7 +45,7 @@ namespace ToDo.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
 
-            User user = await _userService.GetByUserName(loginRequest.Username);
+            UserResponse user = await _userService.GetByUserName(loginRequest.Username);
             if (user==null)
             {
                 return BadRequest();
