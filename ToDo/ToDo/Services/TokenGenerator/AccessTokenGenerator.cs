@@ -23,7 +23,7 @@ namespace ToDo.Services.TokenGenerator
             SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("sub", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Username),
 
