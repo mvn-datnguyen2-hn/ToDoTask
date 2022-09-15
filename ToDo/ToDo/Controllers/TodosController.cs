@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ToDo.DTO;
 using ToDo.DTOs;
 using ToDo.Services.ToDo;
 

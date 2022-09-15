@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ToDo.Model;
+using ToDo.Models;
 
 namespace ToDo.Services.Category
 {
@@ -10,7 +10,7 @@ namespace ToDo.Services.Category
         {
             _context = context;
         }
-        public async Task<List<Model.Category>> GetCategory()
+        public async Task<List<Models.Category>> GetCategory()
         {
             return await _context.Categories.ToListAsync();
         }

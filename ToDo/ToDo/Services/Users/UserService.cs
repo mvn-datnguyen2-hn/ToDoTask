@@ -1,9 +1,9 @@
-﻿using ToDo.DTO;
+﻿
 using ToDo.DTOs;
-using ToDo.Model;
+using ToDo.Models;
 using ToDo.Services.PasswordHash;
 
-namespace ToDo.Services.User
+namespace ToDo.Services.Users
 {
     public class UserService : IUserService
     {
@@ -51,7 +51,7 @@ namespace ToDo.Services.User
         {
             BcryptPasswordHasher passwordHasher = new BcryptPasswordHasher();
             string passwordHash = passwordHasher.HashPassword(registerRequest.Password);
-            Model.User registrationUser = new Model.User()
+            Models.User registrationUser = new Models.User()
             {
                 Email = registerRequest.Email,
                 Username = registerRequest.Username,

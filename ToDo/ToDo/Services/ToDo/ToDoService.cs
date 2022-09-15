@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ToDo.DTO;
 using ToDo.DTOs;
-using ToDo.Model;
 using ToDo.Models;
 
 namespace ToDo.Services.ToDo
@@ -18,7 +16,7 @@ namespace ToDo.Services.ToDo
             _mapper = mapper;
         }
 
-        public async Task<List<Model.ToDo>> GetTasks(Guid userId, FilterRequest filterRequest)
+        public async Task<List<Models.ToDo>> GetTasks(Guid userId, FilterRequest filterRequest)
         {
             var querry = _context.Tasks.Where(c => c.UserId == userId);
             
@@ -34,13 +32,13 @@ namespace ToDo.Services.ToDo
 
             return await querry.ToListAsync();
         }
-        public async Task<Model.ToDo> GetTaskById(Guid taskId, Guid userId)
+        public async Task<Models.ToDo> GetTaskById(Guid taskId, Guid userId)
         {
             return await _context.Tasks.FirstOrDefaultAsync(c => c.UserId == userId && c.Id == taskId);
         }
         public async Task CreateTask(Guid userId, ToDoRequest toDoRequest)
         {
-            var item = _mapper.Map<ToDoRequest, Model.ToDo>(toDoRequest);
+            var item = _mapper.Map<ToDoRequest, Models.ToDo>(toDoRequest);
             item.UserId = userId;
             item.Date = DateTime.Now;
             _context.Tasks.Add(item);

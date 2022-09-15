@@ -11,8 +11,7 @@ using ToDo.Security;
 using ToDo.Services.PasswordHash;
 using ToDo.Services.ToDo;
 using ToDo.Services.TokenGenerator;
-using ToDo.Services.User;
-using ToDoDbContext = ToDo.Model.ToDoDbContext;
+using ToDo.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();

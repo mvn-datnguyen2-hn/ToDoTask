@@ -2,6 +2,6 @@
 {
     public interface ICategoryService
     {
-        Task<List<Model.Category>> GetCategory();
+        Task<List<Models.Category>> GetCategory();
     }
 }

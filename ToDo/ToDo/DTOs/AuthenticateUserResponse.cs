@@ -1,4 +1,4 @@
-﻿namespace ToDo.DTO
+﻿namespace ToDo.DTOs
 {
     public class AuthenticateUserResponse
     {

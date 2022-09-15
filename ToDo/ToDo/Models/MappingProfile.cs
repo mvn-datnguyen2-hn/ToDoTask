@@ -7,7 +7,7 @@ namespace ToDo.Models
     {
         public MappingProfile()
         {
-            CreateMap<Model.ToDo, ToDoRequest>().ReverseMap();
+            CreateMap<Models.ToDo, ToDoRequest>().ReverseMap();
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ToDo.DTO;
 using ToDo.DTOs;
-using ToDo.Model;
+using ToDo.Models;
 using ToDo.Services.PasswordHash;
 using ToDo.Services.TokenGenerator;
-using ToDo.Services.User;
+using ToDo.Services.Users;
 
 namespace ToDo.Controllers
 {

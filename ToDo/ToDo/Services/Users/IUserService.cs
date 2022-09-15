@@ -1,8 +1,7 @@
-﻿using ToDo.DTO;
-using ToDo.DTOs;
-using ToDo.Model;
+﻿using ToDo.DTOs;
+using ToDo.Models;
 
-namespace ToDo.Services.User
+namespace ToDo.Services.Users
 {
     public interface IUserService
     {
