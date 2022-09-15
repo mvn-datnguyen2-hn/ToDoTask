@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.DTOs;
-using ToDo.Model;
+using ToDo.Security;
 
 namespace ToDo.Services.TokenGenerator
 {

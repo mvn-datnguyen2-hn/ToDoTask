@@ -1,12 +1,13 @@
-﻿namespace ToDo.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ToDo.DTOs
 {
     public class ToDoRequest
     {
-        public Guid TaskId { get; set; }
+        [Required]
         public int CategoryId { get; set; }
+        [Required]
         public string Title { get; set; }
         public string Details { get; set; }
-        public int Status { get; set; }
-
     }
 }

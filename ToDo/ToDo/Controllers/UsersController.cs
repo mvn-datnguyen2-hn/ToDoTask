@@ -14,13 +14,12 @@ namespace ToDo.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly BcryptPasswordHasher _passwordHasher;
+        
         private readonly AccessTokenGenerator _accessTokenGenerator;
 
-        public UsersController(IUserService userService, BcryptPasswordHasher passwordHasher,AccessTokenGenerator accessTokenGenerator)
+        public UsersController(IUserService userService, AccessTokenGenerator accessTokenGenerator)
         {
             _userService = userService;
-            _passwordHasher = passwordHasher;
             _accessTokenGenerator = accessTokenGenerator;
         }
         [HttpPost("register")]
@@ -37,7 +36,7 @@ namespace ToDo.Controllers
                 return BadRequest(new ErrorResponse("Username already exist"));
             }
             await _userService.SignUp(registerRequest);
-            
+
             return Ok();
         }
 
@@ -46,15 +45,14 @@ namespace ToDo.Controllers
         {
 
             UserResponse user = await _userService.GetByUserName(loginRequest.Username);
-            if (user==null)
+            if (user == null)
             {
                 return BadRequest();
             }
 
-            bool iscorrectPassword = _passwordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash);
-            if (!iscorrectPassword)
+            if (!_userService.CheckLogin(loginRequest))
             {
-                return Unauthorized();
+                return BadRequest();
             }
 
             string accessToken = _accessTokenGenerator.GenerateToken(user);

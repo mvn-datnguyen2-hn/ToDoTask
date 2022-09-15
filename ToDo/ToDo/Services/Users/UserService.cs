@@ -9,9 +9,11 @@ namespace ToDo.Services.User
     {
         private readonly ToDoDbContext _context;
         private readonly List<UserResponse> _users;
-        public UserService(ToDoDbContext context)
+        private readonly BcryptPasswordHasher _passwordHasher;
+        public UserService(ToDoDbContext context, BcryptPasswordHasher passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
             _users = new List<UserResponse>();
             GetUser();
         }
@@ -25,7 +27,6 @@ namespace ToDo.Services.User
                     Id = x.Id,
                     Email = x.Email,
                     Username = x.Username,
-                    PasswordHash = x.PasswordHash
                 };
                 _users.Add(userResponse);
             }
@@ -39,6 +40,13 @@ namespace ToDo.Services.User
         {
             return Task.FromResult(_users.FirstOrDefault(c => c.Username == username));
         }
+
+        public bool CheckLogin(LoginRequest loginRequest)
+        {
+            var check = _context.Users.Where(c => c.Username == loginRequest.Username).FirstOrDefault();
+            return _passwordHasher.VerifyPassword(loginRequest.Password, check.PasswordHash);
+        }
+
         public Task SignUp(RegisterRequest registerRequest)
         {
             BcryptPasswordHasher passwordHasher = new BcryptPasswordHasher();

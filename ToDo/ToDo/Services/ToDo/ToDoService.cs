@@ -1,38 +1,38 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using ToDo.DTO;
 using ToDo.DTOs;
 using ToDo.Model;
+using ToDo.Models;
 
 namespace ToDo.Services.ToDo
 {
     public class ToDoService : IToDoService
     {
         private readonly ToDoDbContext _context;
-        public ToDoService(ToDoDbContext context)
+        private readonly IMapper _mapper;
+        public ToDoService(ToDoDbContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<List<Model.ToDo>> GetTask(Guid userId, FilterRequest filterRequest)
+        public async Task<List<Model.ToDo>> GetTasks(Guid userId, FilterRequest filterRequest)
         {
-            if (filterRequest.Status == null && filterRequest.Day == null)
+            var querry = _context.Tasks.Where(c => c.UserId == userId);
+            
+            if (filterRequest.Status != null)
             {
-                return await _context.Tasks.Where(c => c.UserId == userId).ToListAsync();
+                querry = querry.Where(c => c.Status == filterRequest.Status);
             }
 
-            if (filterRequest.Status == null && filterRequest.Day != null)
+            if (filterRequest.Day != null)
             {
-                return await _context.Tasks.Where(c => c.UserId == userId && c.Date.Date == filterRequest.Day).ToListAsync();
+                querry = querry.Where(c => c.Date.Date == filterRequest.Day);
             }
 
-            if (filterRequest.Status != null && filterRequest.Day == null)
-            {
-                return await _context.Tasks.Where(c => c.UserId == userId && c.Status == filterRequest.Status).ToListAsync();
-            }
-
-            return await _context.Tasks.Where(c => c.UserId == userId && c.Date == filterRequest.Day && c.Status == filterRequest.Status).ToListAsync();
-
+            return await querry.ToListAsync();
         }
         public async Task<Model.ToDo> GetTaskById(Guid taskId, Guid userId)
         {
@@ -40,33 +40,23 @@ namespace ToDo.Services.ToDo
         }
         public async Task CreateTask(Guid userId, ToDoRequest toDoRequest)
         {
-            Model.ToDo toDo = new Model.ToDo()
-            {
-                Id = toDoRequest.TaskId,
-                CategoryId = toDoRequest.CategoryId,
-                UserId = userId,
-                Title = toDoRequest.Title,
-                Details = toDoRequest.Details,
-                Date = DateTime.Now,
-                Status = toDoRequest.Status
-            };
-            _context.Tasks.Add(toDo);
-            await _context.SaveChangesAsync();
-
-        }
-        public async Task UpdateTask(Guid userId, ToDoRequest toDo)
-        {
-            var item = _context.Tasks.FirstOrDefault(c => c.Id == toDo.TaskId);
-            item.CategoryId = toDo.CategoryId;
+            var item = _mapper.Map<ToDoRequest, Model.ToDo>(toDoRequest);
             item.UserId = userId;
+            item.Date = DateTime.Now;
+            _context.Tasks.Add(item);
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateTask(Guid userId, ToDoRequest toDo, Guid taskId)
+        {
+            var item = _context.Tasks.FirstOrDefault(c => c.UserId == userId && c.Id == taskId);
+            item.CategoryId = toDo.CategoryId;
             item.Details = toDo.Details;
             item.Title = toDo.Title;
             item.Date = DateTime.Now;
-            item.Status = toDo.Status;
             _context.Update(item);
             await _context.SaveChangesAsync();
         }
-        public async Task TaskDone(Guid userId, List<Guid> taskIDs)
+        public async Task CompleteTask(Guid userId, List<Guid> taskIDs)
         {
             using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
@@ -80,7 +70,5 @@ namespace ToDo.Services.ToDo
                 await transaction.CommitAsync();
             }
         }
-
-
     }
 }

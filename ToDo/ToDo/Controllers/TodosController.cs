@@ -11,11 +11,11 @@ namespace ToDo.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class TodoController : ControllerBase
+    public class TodosController : ControllerBase
     {
         private readonly IToDoService _toDoService;
 
-        public TodoController(IToDoService toDoService)
+        public TodosController(IToDoService toDoService)
         {
             _toDoService = toDoService;
         }
@@ -23,7 +23,7 @@ namespace ToDo.Controllers
         public async Task<IActionResult> GetTasks([FromQuery] FilterRequest filter)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).FirstOrDefault());
-            return Ok(await _toDoService.GetTask(userId, filter));
+            return Ok(await _toDoService.GetTasks(userId, filter));
         }
         [HttpGet("tasks/{taskId}")]
         public async Task<IActionResult> GetTasksById(Guid taskId)
@@ -40,17 +40,17 @@ namespace ToDo.Controllers
             return Ok();
         }
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] ToDoRequest toDo)
+        public async Task<IActionResult> Update([FromBody] ToDoRequest toDo, Guid taskId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).FirstOrDefault());
-            await _toDoService.UpdateTask(userId, toDo);
+            await _toDoService.UpdateTask(userId, toDo, taskId);
             return Ok(toDo);
         }
         [HttpPatch("tasks/complete")]
         public async Task<IActionResult> CompleteTask([FromBody] List<Guid> taskIDs)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).FirstOrDefault());
-            await _toDoService.TaskDone(userId, taskIDs);
+            await _toDoService.CompleteTask(userId, taskIDs);
             return Ok();
         }
     }

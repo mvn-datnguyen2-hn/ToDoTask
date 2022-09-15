@@ -1,4 +1,4 @@
-﻿namespace ToDo.Model
+﻿namespace ToDo.Security
 {
     public class AuthenticationConfiguration
     {
@@ -6,6 +6,5 @@
         public int AccessTokenExpirationMinutes { get; set; }
         public string Issuer { get; set; }
         public string Audience { get; set; }
-        
     }
 }

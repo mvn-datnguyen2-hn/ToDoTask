@@ -1,10 +1,13 @@
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ToDo.Model;
+using ToDo.DTOs;
+using ToDo.Models;
+using ToDo.Security;
 using ToDo.Services.PasswordHash;
 using ToDo.Services.ToDo;
 using ToDo.Services.TokenGenerator;
@@ -25,7 +28,13 @@ builder.Services.AddSingleton<BcryptPasswordHasher>();
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddSingleton<AccessTokenGenerator>();
 builder.Services.Configure<AuthenticationConfiguration>(builder.Configuration.GetSection("Authentication"));
+var mappingConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
 
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(c =>
 {
     //AuthenticationConfiguration authenticationConfiguration;
@@ -55,7 +64,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
