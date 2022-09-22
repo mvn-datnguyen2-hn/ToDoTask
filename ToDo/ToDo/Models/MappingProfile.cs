@@ -8,6 +8,8 @@ namespace ToDo.Models
         public MappingProfile()
         {
             CreateMap<Models.ToDo, ToDoRequest>().ReverseMap();
+            CreateMap<Models.User, RegisterRequest>().ReverseMap();
+            CreateMap<Models.User, UserResponse>().ReverseMap();
         }
     }
 }

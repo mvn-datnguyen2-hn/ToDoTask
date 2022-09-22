@@ -18,5 +18,6 @@ namespace ToDo.Models
         public string Details { get; set; }
         public DateTime Date { get; set; }
         public int Status { get; set; }
+        
     }
 }
